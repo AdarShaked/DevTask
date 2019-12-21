@@ -43,8 +43,6 @@ public class UrlTextHandler implements Matcher.OnJobDone {
         Map<String, List<WordLocation>> resMap = new HashMap<>();
         matchersResList.forEach(map ->
                 {
-                    if (!map.keySet().isEmpty())
-                    {
                         map.keySet().forEach(key ->
                         {
                             if (resMap.containsKey(key)) {
@@ -54,7 +52,6 @@ public class UrlTextHandler implements Matcher.OnJobDone {
                             }
                         }
                         );
-                    }
                 }
         );
 

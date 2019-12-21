@@ -3,18 +3,19 @@ package Solution;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class UrlTextHandler implements Matcher.OnJobDone {
     private int linesPerBlock;
     private String urlStr;
     private Set<String> stringsToMatch;
-    private List<Map<String, List<WordLocation>>> matchersResList;
+    private ConcurrentLinkedQueue<Map<String, List<WordLocation>>> matchersResList;
 
     public UrlTextHandler(int linesPerBlock, String urlStr, Set<String> stringsToMatch) {
         this.linesPerBlock = linesPerBlock;
         this.urlStr = urlStr;
         this.stringsToMatch = stringsToMatch;
-        matchersResList = new ArrayList<>();
+        matchersResList = new ConcurrentLinkedQueue<>();
     }
 
     public void printResults() {
@@ -38,16 +39,24 @@ public class UrlTextHandler implements Matcher.OnJobDone {
         aggregate(matchersResList);
     }
 
-    private void aggregate(List<Map<String, List<WordLocation>>> matchersResList) {
+    private void aggregate(ConcurrentLinkedQueue<Map<String, List<WordLocation>>> matchersResList) {
         Map<String, List<WordLocation>> resMap = new HashMap<>();
-
-        matchersResList.forEach(map -> map.keySet().forEach(key -> {
-            if (resMap.containsKey(key)) {
-                resMap.get(key).addAll(map.get(key));
-            } else {
-                resMap.put(key, map.get(key));
-            }
-        }));
+        matchersResList.forEach(map ->
+                {
+                    if (!map.keySet().isEmpty())
+                    {
+                        map.keySet().forEach(key ->
+                        {
+                            if (resMap.containsKey(key)) {
+                                resMap.get(key).addAll(map.get(key));
+                            } else {
+                                resMap.put(key, map.get(key));
+                            }
+                        }
+                        );
+                    }
+                }
+        );
 
         System.out.println(resMap);
     }

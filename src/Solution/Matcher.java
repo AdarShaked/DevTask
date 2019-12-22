@@ -25,13 +25,13 @@ public class Matcher implements Runnable {
     @Override
     public void run() {
         Map<String, List<WordLocation>> retMap = new HashMap<>();
-        List<String> lst = Arrays.asList(strBlock.split(System.lineSeparator()));
+        List<String> listOfLines = Arrays.asList(strBlock.split(System.lineSeparator()));
         int charOffset = 0;
         int index;
 
-        for (int line = 0; line < lst.size(); line++) {
+        for (int line = 0; line < listOfLines.size(); line++) {
             for (String strTomatch : stringsToMatchSet) {
-                index = lst.get(line).indexOf(strTomatch);
+                index = listOfLines.get(line).indexOf(strTomatch);
                 while (index >= 0) {  // indexOf returns -1 if no match found
                     WordLocation locationToAdd = new WordLocation(this.blockLineOffset + line, this.blockCharOffset + charOffset + index);
                     if (!retMap.containsKey(strTomatch)) {
@@ -41,10 +41,10 @@ public class Matcher implements Runnable {
                     } else {
                         retMap.get(strTomatch).add(locationToAdd);
                     }
-                    index = lst.get(line).indexOf(strTomatch, index + strTomatch.length());
+                    index = listOfLines.get(line).indexOf(strTomatch, index + strTomatch.length());
                 }
             }
-            charOffset += lst.get(line).length();
+            charOffset += listOfLines.get(line).length();
         }
         if (listener != null) {
             listener.onDone(retMap);
